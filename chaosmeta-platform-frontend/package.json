@@ -22,7 +22,8 @@
     "echarts": "^5.4.3",
     "react-ace": "^10.1.0",
     "react-cookies": "^0.1.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "@ebay/nice-modal-react": "^1.2.13"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
@@ -35,5 +36,6 @@
     "prettier-plugin-organize-imports": "^3.2.2",
     "prettier-plugin-packagejson": "^2.4.3",
     "typescript": "^5.0.3"
-  }
+  },
+  "repository": "https://C1erman:5465651zsy!@github.com/C1erman/chaosmeta.git"
 }

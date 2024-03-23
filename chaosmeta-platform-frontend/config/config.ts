@@ -18,7 +18,6 @@ export default defineConfig({
   routes,
   npmClient: 'yarn',
   styledComponents: {},
-  
   locale: {
     // 默认使用 src/locales/zh-CN.ts 作为多语言文件
     default: 'zh-CN',
@@ -28,12 +27,12 @@ export default defineConfig({
   },
   proxy: {
     '/users': {
-      target: 'http://127.0.0.1:8082/',
+      target: 'http://47.117.167.206:8082/',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },
     '/chaosmeta': {
-      target: 'http://127.0.0.1:8082/',
+      target: 'http://47.117.167.206:8082/',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },

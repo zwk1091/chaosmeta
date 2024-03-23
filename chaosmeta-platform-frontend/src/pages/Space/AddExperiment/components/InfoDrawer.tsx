@@ -1,13 +1,20 @@
-import ShowText from '@/components/ShowText';
-import { triggerTypes } from '@/constants';
-import { formatTime, getIntlLabel, timesStampString } from '@/utils/format';
-import { renderScheduleType, renderTags } from '@/utils/renderItem';
-import { history, useIntl } from '@umijs/max';
-import { Button, DatePicker, Drawer, Form, Input, Radio, Space } from 'antd';
-import dayjs from 'dayjs';
+// react
 import React, { useEffect, useState } from 'react';
+// UI 资产
+import { Alert, Button, DatePicker, Drawer, Form, Input, Radio, Select, Space } from 'antd';
+import AsyncRender from '@/components/AsyncRender';
 import { InfoEditDrawer } from '../style';
 import TagSelect from './TagSelect';
+// 辅助函数
+import ShowText from '@/components/ShowText';
+import { getIntlLabel, timesStampString } from '@/utils/format';
+import { renderScheduleType, renderTags } from '@/utils/renderItem';
+import { history, useIntl } from '@umijs/max';
+import dayjs from 'dayjs';
+// 网络请求
+import { queryClusterList } from '@/services/chaosmeta/ClusterController';
+// 常量
+import { triggerTypes } from '@/constants';
 
 interface IProps {
   open: boolean;
@@ -27,6 +34,8 @@ const InfoDrawer: React.FC<IProps> = (props) => {
   const [form] = Form.useForm();
   const [addTagList, setAddTagList] = useState<any>([]);
   const intl = useIntl();
+  // 标识集群信息是否更新过
+  const [clusterModified, setClusterModified] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -46,6 +55,9 @@ const InfoDrawer: React.FC<IProps> = (props) => {
         </Form.Item>
         <Form.Item label="标签">{renderTags(baseInfo?.labels)}</Form.Item>
         <Form.Item label="触发方式">{renderScheduleType(baseInfo)}</Form.Item>
+        <Form.Item name='cluster_id' label="所属集群">
+          <ShowText />
+        </Form.Item>
       </div>
     );
   };
@@ -88,7 +100,7 @@ const InfoDrawer: React.FC<IProps> = (props) => {
     <Drawer
       open={open}
       onClose={handleClose}
-      title="基本信息"
+      title={intl.formatMessage({ id: 'basicInfo' })}
       width={560}
       footer={
         <div>
@@ -221,6 +233,46 @@ const InfoDrawer: React.FC<IProps> = (props) => {
                   return null;
                 }}
               </Form.Item>
+              <Form.Item
+                name='cluster_id'
+                label={intl.formatMessage({ id: 'clusterManagement.membershipInfo' })}
+                rules={[{ required: true }]}
+              >
+                <AsyncRender
+                  data={async () => {
+                    try {
+                      const res = await queryClusterList({ page: 1, page_size: 20 });
+
+                      if (res.data && res.data.clusters instanceof Array) {
+                        return res.data.clusters.map((i: any) => {
+                          return { label: i.name, value: i.id }
+                        });
+                      }
+                      return [];
+                    }
+                    catch {
+                      return [];
+                    }
+                  }}
+                  component={(options) => {
+                    return (
+                      <Select
+                        options={options}
+                        placeholder={intl.formatMessage({ id: 'clusterManagement.membershipInfo.placeholder' })}
+                        onChange={() => {
+                          setClusterModified(true);
+                        }}
+                      />
+                    );
+                  }}
+                  onDataLoad={(data) => {
+                    form.setFieldValue('cluster_id', data.at(0)?.value);
+                  }}
+                />
+              </Form.Item>
+              {clusterModified && (
+                <Alert type="warning" message={intl.formatMessage({ id: 'clusterManagement.membershipInfo.modified' })} />
+              )}
             </>
           ) : (
             readOnlyRender()
