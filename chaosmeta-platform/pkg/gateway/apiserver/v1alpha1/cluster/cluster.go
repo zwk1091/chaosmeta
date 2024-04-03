@@ -22,6 +22,7 @@ import (
 	"chaosmeta-platform/util/log"
 	"context"
 	"encoding/json"
+	"fmt"
 	beego "github.com/beego/beego/v2/server/web"
 )
 
@@ -65,6 +66,7 @@ func (c *ClusterController) Get() {
 		Id:         cluster.ID,
 		Name:       cluster.Name,
 		Kubeconfig: cluster.KubeConfig,
+		CreateTime: fmt.Sprint(cluster.CreateTime.UnixMilli()),
 	})
 }
 
@@ -87,6 +89,7 @@ func (c *ClusterController) GetList() {
 			Id:         cluster.ID,
 			Name:       cluster.Name,
 			Kubeconfig: cluster.KubeConfig,
+			CreateTime: fmt.Sprint(cluster.CreateTime.UnixMilli()),
 		})
 	}
 	c.Success(&c.Controller, listClusterResponse)
