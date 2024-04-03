@@ -84,8 +84,9 @@ func (c *ClusterController) GetList() {
 
 	for _, cluster := range clusterList {
 		listClusterResponse.Clusters = append(listClusterResponse.Clusters, ClusterData{
-			Id:   cluster.ID,
-			Name: cluster.Name,
+			Id:         cluster.ID,
+			Name:       cluster.Name,
+			Kubeconfig: cluster.KubeConfig,
 		})
 	}
 	c.Success(&c.Controller, listClusterResponse)
@@ -103,9 +104,6 @@ func (c *ClusterController) Update() {
 		c.Error(&c.Controller, err)
 		return
 	}
-
-	username := c.Ctx.Input.GetData("userName").(string)
-	log.Error(username, "Update:", requestBody.Name)
 
 	clusterService := &cluster.ClusterService{}
 	if err := clusterService.Update(context.Background(), clusterId, requestBody.Name, requestBody.Kubeconfig); err != nil {
