@@ -1,6 +1,6 @@
 {
   "private": true,
-  "author": "hlt01362665 <hlt01362665@antgroup.com>",
+  "author": "C1erman",
   "scripts": {
     "dev": "max dev",
     "build": "max build",
@@ -36,6 +36,5 @@
     "prettier-plugin-organize-imports": "^3.2.2",
     "prettier-plugin-packagejson": "^2.4.3",
     "typescript": "^5.0.3"
-  },
-  "repository": "https://C1erman:5465651zsy!@github.com/C1erman/chaosmeta.git"
+  }
 }
