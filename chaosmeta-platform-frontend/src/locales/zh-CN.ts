@@ -330,7 +330,7 @@ const clusterManagement = {
   delete: '删除',
   cancel: '取消',
   confirm: '确定',
-  inputPlaceholder: 'Please enter',
+  inputPlaceholder: '请输入集群名称',
   'clusterManagement.membershipInfo': '所属集群',
   'clusterManagement.membershipInfo.placeholder': '请选择所属集群',
   'clusterManagement.membershipInfo.modified': '修改集群，执行实例可能会失效，请重新确认',

@@ -265,8 +265,8 @@ const InfoDrawer: React.FC<IProps> = (props) => {
                       />
                     );
                   }}
-                  onDataLoad={(data) => {
-                    form.setFieldValue('cluster_id', data.at(0)?.value);
+                  onDataLoad={() => {
+                    form.setFieldValue('cluster_id', '0');
                   }}
                 />
               </Form.Item>

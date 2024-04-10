@@ -27,12 +27,12 @@ export default defineConfig({
   },
   proxy: {
     '/users': {
-      target: 'http://47.117.167.206:8082/',
+      target: 'http://30.230.19.60:8082/',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },
     '/chaosmeta': {
-      target: 'http://47.117.167.206:8082/',
+      target: 'http://30.230.19.60:8082/',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },

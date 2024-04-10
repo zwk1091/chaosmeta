@@ -35,7 +35,10 @@ const AddOrUpdateClusterDrawer = NiceModal.create((props: {
   // 如果是更新集群信息则需要回填
   useEffect(() => {
     if (type === '更新' && entity) {
-      form.setFieldsValue(entity);
+      try {
+        form.setFieldsValue(entity);
+      }
+      catch {}
     }
   }, [type, entity]);
 
@@ -57,7 +60,7 @@ const AddOrUpdateClusterDrawer = NiceModal.create((props: {
                 const formData = await form.validateFields();
                 const res = await addClusterRequest.run({
                   name: formData.name,
-                  kubeconfig: btoa(formData.kubeconfig),
+                  kubeconfig: formData.kubeconfig,
                 });
 
                 if (res.data && res.data.id) {
@@ -82,7 +85,7 @@ const AddOrUpdateClusterDrawer = NiceModal.create((props: {
                 const res = await updateClusterRequest.run({
                   id: entity?.id,
                   name: formData.name,
-                  kubeconfig: btoa(formData.kubeconfig),
+                  kubeconfig: formData.kubeconfig,
                 });
 
                 if (res.data && res.data) {
@@ -173,11 +176,14 @@ const Cluster: React.FunctionComponent = () => {
               },
               {
                 title: intl.formatMessage({ id: 'createTime' }),
-                dataIndex: 'create_time',
+                dataIndex: 'createTime',
                 hideInSearch: true,
                 width: 250,
-                render(dom, { create_time }) {
-                  return create_time ? dayjs(create_time).format('YYYY-MM-DD HH:mm:ss') : '-';
+                render(dom, { createTime }: any) {
+                  if (typeof createTime === 'string' && typeof (Number(createTime)) === 'number') {
+                    return dayjs(Number(createTime)).format('YYYY-MM-DD HH:mm:ss');
+                  }
+                  return '-';
                 },
               },
               {
