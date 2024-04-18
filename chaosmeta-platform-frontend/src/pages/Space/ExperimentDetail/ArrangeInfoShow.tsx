@@ -272,11 +272,10 @@ const ArrangeInfoShow: React.FC<IProps> = (props) => {
                   $nodeStutas={isResult && el?.status}
                   // 减去外边距的2px，避免子元素多时宽度偏差过大
                   style={{
-                    width: `${
-                      curDuration *
-                        (scaleStepMap[curProportion]?.widthSecond || 3) -
+                    width: `${curDuration *
+                      (scaleStepMap[curProportion]?.widthSecond || 3) -
                       2
-                    }px`,
+                      }px`,
                     // 最小宽度为1s对应的px
                     minWidth: `${scaleStepMap[curProportion]?.widthSecond}px`,
                     flexShrink: 0,
@@ -289,7 +288,7 @@ const ArrangeInfoShow: React.FC<IProps> = (props) => {
                   <div className="item">
                     {curDuration *
                       (scaleStepMap[curProportion]?.widthSecond || 3) >
-                    30 ? (
+                      30 ? (
                       <div>
                         <div
                           className="title ellipsis"
@@ -509,6 +508,15 @@ const ArrangeInfoShow: React.FC<IProps> = (props) => {
             <Spin spinning={getFaultNodeFields?.loading}>
               <Form form={configForm}>
                 <div className="subtitle">
+                  {intl.formatMessage({ id: 'belongingCluster' })}
+                </div>
+                <Form.Item
+                  label={intl.formatMessage({ id: 'clusterName' })}
+                  name='cluster_id'
+                >
+                  <ShowText ellipsis />
+                </Form.Item>
+                <div className="subtitle range">
                   {intl.formatMessage({ id: 'configInfo' })}
                 </div>
                 <Form.Item
@@ -519,12 +527,12 @@ const ArrangeInfoShow: React.FC<IProps> = (props) => {
                 </Form.Item>
                 <Form.Item
                   label={intl.formatMessage({ id: 'nodeType' })}
-                  // name={'exec_type'}
+                // name={'exec_type'}
                 >
                   <ShowText
                     value={
                       (getLocale() === 'en-US' ? nodeTypeMapUS : nodeTypeMap)[
-                        activeCol?.exec_type
+                      activeCol?.exec_type
                       ] || activeCol?.exec_type
                     }
                   />
@@ -542,11 +550,10 @@ const ArrangeInfoShow: React.FC<IProps> = (props) => {
                         {intl.formatMessage({ id: 'commonParameters' })}
                       </div>
                       <Form.Item
-                        label={`${
-                          activeCol?.exec_type === 'wait'
-                            ? intl.formatMessage({ id: 'waitTime' })
-                            : intl.formatMessage({ id: 'duration' })
-                        }`}
+                        label={`${activeCol?.exec_type === 'wait'
+                          ? intl.formatMessage({ id: 'waitTime' })
+                          : intl.formatMessage({ id: 'duration' })
+                          }`}
                         name={'duration'}
                       >
                         <ShowText />
