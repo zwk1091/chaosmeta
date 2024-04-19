@@ -255,9 +255,12 @@ const InfoDrawer: React.FC<IProps> = (props) => {
                     }
                   }}
                   component={(options) => {
+                    /** 默认集群 */
+                    const defaultCluster = { label: '默认集群', value: '0' };
+
                     return (
                       <Select
-                        options={options}
+                        options={[defaultCluster, ...options]}
                         placeholder={intl.formatMessage({ id: 'clusterManagement.membershipInfo.placeholder' })}
                         onChange={() => {
                           setClusterModified(true);
