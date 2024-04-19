@@ -102,6 +102,8 @@ const AddExperiment = () => {
   const renderTitle = () => {
     return (
       <Form form={form}>
+        {/* 用于保存内部弹窗中所填写的集群信息 */}
+        <Form.Item name='cluster_id' noStyle hidden />
         <Space>
           <Form.Item name={'name'}>
             <ShowText ellipsis />

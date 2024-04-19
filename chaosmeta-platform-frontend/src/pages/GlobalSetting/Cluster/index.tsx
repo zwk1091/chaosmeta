@@ -36,7 +36,10 @@ const AddOrUpdateClusterDrawer = NiceModal.create((props: {
   useEffect(() => {
     if (type === '更新' && entity) {
       try {
-        form.setFieldsValue(entity);
+        form.setFieldsValue({
+          name: entity.name,
+          kubeconfig: atob(entity.kubeconfig),
+        });
       }
       catch {}
     }
@@ -255,7 +258,6 @@ const Cluster: React.FunctionComponent = () => {
         </Card>
       </PageContainer>
     </NiceModal.Provider>
-
   );
 }
 
