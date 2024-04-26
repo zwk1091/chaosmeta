@@ -302,7 +302,7 @@ func (es *ExperimentService) UpdateExperiment(uuid string, experimentParam *Expe
 	getExperiment.Description = experimentParam.Description
 	getExperiment.ScheduleType = experimentParam.ScheduleType
 	getExperiment.ScheduleRule = experimentParam.ScheduleRule
-
+	getExperiment.ClusterID = experimentParam.ClusterID
 	return experiment.UpdateExperiment(getExperiment)
 	//experimentParam.Creator = getExperiment.Creator
 	//if err := es.DeleteExperimentByUUID(uuid); err != nil {
