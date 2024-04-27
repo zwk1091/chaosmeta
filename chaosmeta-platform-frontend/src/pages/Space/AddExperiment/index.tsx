@@ -23,6 +23,8 @@ import {
   updateExperiment,
 } from '@/services/chaosmeta/ExperimentController';
 import { querySpaceUserPermission } from '@/services/chaosmeta/SpaceController';
+// 常量
+import { currentConfig } from '@/constants';
 // 样式文件
 import { Container } from './style';
 
@@ -60,6 +62,10 @@ export default () => {
         form.setFieldsValue(experiments);
         setBaseInfo(experiments);
         setArrangeList(arrangeDataOriginTranstion(newList || []));
+        // 更新当前集群信息
+        {
+          currentConfig.clusterId = experiments.cluster_id;
+        }
       }
     },
   });
@@ -71,7 +77,6 @@ export default () => {
     onSuccess: (res) => {
       if (res?.code === 200) {
         message.success(intl.formatMessage({ id: 'updateText' }));
-        history?.push('/space/experiment');
       }
     },
   });
@@ -192,7 +197,9 @@ export default () => {
     handleFormatOriginData().then((params) => {
       // 根据新增还是编辑调用不同的接口
       if (experimentId) {
-        editExperiment?.run({ ...params, uuid: experimentId });
+        editExperiment?.run({ ...params, uuid: experimentId }).then(() => {
+          history.push('/space/experiment');
+        });
       } else {
         handleCreateExperiment?.run(params);
       }
@@ -271,7 +278,12 @@ export default () => {
                       className="edit"
                       style={{ color: '#1890FF' }}
                       onClick={async () => {
-                        const formData = await NiceModal.show(ExperimentInfoEditDrawer, { baseInfo, spacePermission });
+                        const formData: any = await NiceModal.show(ExperimentInfoEditDrawer, { baseInfo, spacePermission });
+
+                        // 更新当前集群信息
+                        {
+                          currentConfig.clusterId = formData.cluster_id;
+                        }
 
                         if (formData instanceof Object) {
                           // 编辑时直接调用接口更新并刷新当前页面
