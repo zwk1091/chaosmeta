@@ -31,6 +31,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/rest"
 	"net/http"
+	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 type RemoteModeType string
@@ -55,11 +56,11 @@ type RemoteExecutor interface {
 
 var globalRemoteExecutor RemoteExecutor
 
-func AutoSelectRemoteExecutor(config *config.ExecutorConfig, restConfig *rest.Config, schema *runtime.Scheme) error {
+func AutoSelectRemoteExecutor(ctx context.Context, config *config.ExecutorConfig, restConfig *rest.Config, schema *runtime.Scheme) error {
 	/**
 	 * 启动时通道自动选择
 	 */
-	ctx := context.Background()
+	logger := log.FromContext(ctx)
 	daemonSetRemoteExecutor := &daemonsetexecutor.DaemonsetRemoteExecutor{
 		RESTConfig: restConfig,
 		Schema:     schema,
@@ -74,6 +75,7 @@ func AutoSelectRemoteExecutor(config *config.ExecutorConfig, restConfig *rest.Co
 	}
 	if err := daemonSetRemoteExecutor.CheckExecutorWay(ctx); err == nil {
 		globalRemoteExecutor = daemonSetRemoteExecutor
+		logger.Info("select daemonSet way")
 		return nil
 	}
 	agentExecutor := &agentexecutor.AgentRemoteExecutor{
@@ -84,6 +86,7 @@ func AutoSelectRemoteExecutor(config *config.ExecutorConfig, restConfig *rest.Co
 		ServicePort: config.AgentConfig.AgentPort,
 	}
 	if err := agentExecutor.CheckExecutorWay(ctx); err == nil {
+		logger.Info("select agent way")
 		globalRemoteExecutor = agentExecutor
 	}
 	middlewareRemoteExecutor := &middlewareexecutor.MiddleWareExecutor{
@@ -95,6 +98,7 @@ func AutoSelectRemoteExecutor(config *config.ExecutorConfig, restConfig *rest.Co
 		},
 	}
 	if err := middlewareRemoteExecutor.CheckExecutorWay(ctx); err == nil {
+		logger.Info("select middleware way")
 		globalRemoteExecutor = middlewareRemoteExecutor
 	}
 	return nil

@@ -149,7 +149,7 @@ func main() {
 	//	setupLog.Error(err, "set remote executor error")
 	//	os.Exit(1)
 	//}
-	if err = remoteexecutor.AutoSelectRemoteExecutor(&mainConfig.Executor, mgr.GetConfig(), mgr.GetScheme()); err != nil {
+	if err = remoteexecutor.AutoSelectRemoteExecutor(context.Background(), &mainConfig.Executor, mgr.GetConfig(), mgr.GetScheme()); err != nil {
 		setupLog.Error(err, "auto select remote executor error")
 		os.Exit(1)
 	}
