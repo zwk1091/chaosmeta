@@ -49,7 +49,7 @@ const ExperimentInfoEditDrawer = NiceModal.create((props: {
         labels,
         description,
         name,
-        cluster_id,
+        cluster_id: Number(cluster_id),
       });
       if (baseInfo?.schedule_type === 'once') {
         form.setFieldValue('once_time', dayjs(timesStampString(schedule_rule)));
@@ -203,7 +203,7 @@ const ExperimentInfoEditDrawer = NiceModal.create((props: {
             }}
           </Form.Item>
           {/* 当集群信息发生更改时需要给出警告 */}
-          {(cluster_id !== '0' && cluster_id !== baseInfo?.cluster_id) && (
+          {(cluster_id !== 0 && cluster_id !== baseInfo?.cluster_id) && (
             <Alert type="warning" message={intl.formatMessage({ id: 'clusterManagement.membershipInfo.modified' })} />
           )}
           <Form.Item
@@ -229,7 +229,7 @@ const ExperimentInfoEditDrawer = NiceModal.create((props: {
               }}
               component={(options) => {
                 /** 默认集群 */
-                const defaultCluster = { label: '默认集群', value: '0' };
+                const defaultCluster = { label: '默认集群', value: 0 };
 
                 return (
                   <Select
@@ -240,8 +240,8 @@ const ExperimentInfoEditDrawer = NiceModal.create((props: {
               }}
               onDataLoad={() => {
                 // 没有配置集群信息的情况下需要设置默认集群
-                if (!form.getFieldValue('cluster_id') || !baseInfo.cluster_id) {
-                  form.setFieldValue('cluster_id', '0');
+                if (form.getFieldValue('cluster_id') === undefined || baseInfo.cluster_id === undefined) {
+                  form.setFieldValue('cluster_id', 0);
                 }
               }}
             />
