@@ -27,6 +27,8 @@ import { Form, Space, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import DynamicFormRender from '../AddExperiment/components/DynamicFormRender';
 import { ArrangeWrap, DroppableCol, DroppableRow } from './style';
+import AsyncRender from '@/components/AsyncRender';
+import { queryClusterList } from '@/services/chaosmeta/ClusterController';
 
 interface IProps {
   arrangeList: any[];
@@ -35,6 +37,8 @@ interface IProps {
   isResult?: boolean;
   getExperimentArrangeNodeDetail?: any;
   setCurNodeDetail?: any;
+  /** 实验详情信息 */
+  resultDetail?: Record<string, any>;
 }
 const ArrangeInfoShow: React.FC<IProps> = (props) => {
   const {
@@ -43,6 +47,7 @@ const ArrangeInfoShow: React.FC<IProps> = (props) => {
     isResult,
     getExperimentArrangeNodeDetail,
     setCurNodeDetail,
+    resultDetail = {},
   } = props;
   // 当前占比
   const [curProportion, setCurProportion] = useState<number>(100);
@@ -514,7 +519,32 @@ const ArrangeInfoShow: React.FC<IProps> = (props) => {
                   label={intl.formatMessage({ id: 'clusterName' })}
                   name='cluster_id'
                 >
-                  <ShowText ellipsis />
+                  {/* 这里直接展示当前实验所属的集群信息 */}
+                  <AsyncRender
+                    id={resultDetail?.cluster_id}
+                    data={async () => {
+                      try {
+                        const res = await queryClusterList({ page: 1, page_size: 100 });
+      
+                        if (res.data && res.data.clusters instanceof Array) {
+                          return res.data.clusters.map((i: any) => {
+                            return { name: i.name, id: i.id }
+                          });
+                        }
+                        return [];
+                      }
+                      catch {
+                        return [];
+                      }
+                    }}
+                    component={(list) => {
+                      return (
+                        <div>
+                          {list.find((item: any) => item.id === resultDetail?.cluster_id)?.name ?? '--'}
+                        </div>
+                      );
+                    }}
+                  />
                 </Form.Item>
                 <div className="subtitle range">
                   {intl.formatMessage({ id: 'configInfo' })}
