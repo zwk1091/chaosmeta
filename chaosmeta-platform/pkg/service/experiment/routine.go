@@ -468,7 +468,7 @@ func (e *ExperimentRoutine) SyncExperimentsStatusForOneCluster(clusterId int) {
 	clusterService := cluster.ClusterService{}
 	_, restConfig, err := clusterService.GetRestConfig(context.Background(), clusterId)
 	if err != nil {
-		//log.Error(err)
+		// log.Error("clusterId", clusterId, err)
 		return
 	}
 
@@ -529,6 +529,8 @@ func (e *ExperimentRoutine) SyncExperimentsStatus() {
 	if err != nil {
 		return
 	}
+	//incluster
+	e.SyncExperimentsStatusForOneCluster(0)
 	for _, clusterCur := range clusterList {
 		e.SyncExperimentsStatusForOneCluster(clusterCur.ID)
 	}

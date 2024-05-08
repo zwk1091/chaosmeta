@@ -24,7 +24,7 @@ var (
 type TseMiddleware struct {
 	Config     config.MiddlewareConfig
 	MistClient auth.MistClient
-	tseUrl     string
+	TseUrl     string
 }
 
 type TseTaskRequest struct {
@@ -63,7 +63,7 @@ func (r *TseMiddleware) ExecCmdTask(ctx context.Context, host string, cmd string
 	if err != nil {
 		return errResult
 	}
-	execTaskUrl := fmt.Sprintf("%s/api/task", r.tseUrl)
+	execTaskUrl := fmt.Sprintf("%s/api/task", r.TseUrl)
 	req, err := http.NewRequest("POST", execTaskUrl, bytes.NewBuffer(requestBodyStr))
 	if err != nil {
 		return errResult

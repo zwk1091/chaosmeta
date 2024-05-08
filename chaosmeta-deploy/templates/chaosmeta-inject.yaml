@@ -255,6 +255,10 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: LOCAL_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
         livenessProbe:
           httpGet:
             path: /healthz
@@ -382,14 +386,14 @@ data:
           }
         },
         "middlewareConfig" : {
-          "url" : "https://shell-api.alipay.com",
+          "url" : "http://shell-online-api.global.alipay.com",
           "mistConfig" : {
-            "antVipUrl" : "antvip-pool.stable.alipay.net",
-            "bkmiUrl" : "bkmi-pool.stable.global.alipay.com",
+            "antVipUrl" : "antvip-pool.global.alipay.com",
+            "bkmiUrl" : "bkmi-read-pool.global.alipay.com",
             "appName" : "antchaos",
             "tenant" : "ALIPAY",
-            "mode" : "local",
-            "secret" : "antchaos_fault_inject_offline"
+            "mode" : "prod",
+            "secret" : "antchaos_fault_inject_online"
           }
         }
       }

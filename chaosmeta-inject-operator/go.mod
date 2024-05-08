@@ -8,7 +8,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.6.0
 	github.com/onsi/gomega v1.24.1
 	github.com/stretchr/testify v1.8.0
-	github.com/traas-stack/chaosmeta/chaosmeta-common v0.0.0-20240102105916-8f3b8d9accc5
+	github.com/traas-stack/chaosmeta/chaosmeta-common v0.0.0-20240304074218-2b1da1d93caa
 	k8s.io/api v0.26.0
 	k8s.io/apimachinery v0.26.3
 	k8s.io/client-go v0.26.0
