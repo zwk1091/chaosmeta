@@ -60,7 +60,6 @@ func AutoSelectRemoteExecutor(ctx context.Context, config *config.ExecutorConfig
 	/**
 	 * 启动时通道自动选择
 	 */
-	config.DaemonsetConfig.DaemonName = "chaosmeta-daemon"
 	logger := log.FromContext(ctx)
 	daemonSetRemoteExecutor := &daemonsetexecutor.DaemonsetRemoteExecutor{
 		RESTConfig: restConfig,

@@ -21,14 +21,14 @@
       "daemonName": "chaosmeta-daemon"
     },
     "middlewareConfig" : {
-      "url" : "https://shell-api.alipay.com",
+      "url" : "todo",
       "mistConfig" : {
-        "antVipUrl" : "antvip-pool.stable.alipay.net",
-        "bkmiUrl" : "bkmi-pool.stable.global.alipay.com",
-        "appName" : "antchaos",
+        "antVipUrl" : "todo",
+        "bkmiUrl" : "todo",
+        "appName" : "chaosmetainject",
         "tenant" : "ALIPAY",
-        "mode" : "local",
-        "secretName" : "antchaos_fault_inject_offline"
+        "mode" : "todo",
+        "secretName" : "todo"
       }
     }
   }
