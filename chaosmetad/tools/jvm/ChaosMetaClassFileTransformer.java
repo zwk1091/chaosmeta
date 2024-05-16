@@ -64,6 +64,9 @@ public class ChaosMetaClassFileTransformer implements ClassFileTransformer {
         }
     }
 
+    private static String normalizeClass(String className) {
+        return className.replace("/", ".");
+    }
 
     public String getMessage() {
         return message;
@@ -80,11 +83,16 @@ public class ChaosMetaClassFileTransformer implements ClassFileTransformer {
         System.out.printf("transform class: %s, targetClassName: %s, status: %s, loader: %s, \n", className, targetClassName, status, loader.toString());
 
         try {
-            if (!targetClassName.equals(className) || (status.equals("recovered"))) {
+            //fix className not match
+            String normalizeClassName = normalizeClass(className);
+            if (!targetClassName.equals(normalizeClassName) || (status.equals("recovered"))) {
                 return null;
             }
 
             ClassPool pool = ClassPool.getDefault();
+            //fix javassist not found exception
+            ClassClassPath classPath = new ClassClassPath(loader.loadClass(targetClassName));
+            pool.insertClassPath(classPath);
             CtClass ctClass = pool.get(targetClassName);
             if (status.equals("success") || status.equals("fail")) {
                 // TODO: Need to consider how to clean up the added packages when restoring?
