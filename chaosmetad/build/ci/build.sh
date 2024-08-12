@@ -27,7 +27,7 @@ fi
 
 # base info
 BUILD_NAME="chaosmetad"
-VERSION="1.1.0"
+VERSION="1.1.1"
 BUILD_DATE=$(date "+%Y-%m-%d %H:%M:%S")
 
 # env var
@@ -51,7 +51,7 @@ JVM_AGENT="ChaosMetaJVMAgent"
 JVM_ATTACHER="ChaosMetaJVMAttacher"
 JVM_METHOD_RULE="ChaosMetaJVMMethodRule"
 JVM_TRANSFORMER="ChaosMetaClassFileTransformer"
-JVM_PACKAGE="chaosmeta-jvm-1.1.0.tar.gz"
+JVM_PACKAGE="chaosmeta-jvm-1.1.1.tar.gz"
 
 DISK_EXEC="chaosmeta_diskfill"
 TOOL_EXECNS="chaosmeta_execns"

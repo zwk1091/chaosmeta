@@ -19,7 +19,7 @@ package jvm
 const (
 	TargetJVM       = "jvm"
 	JVMExecutor     = "chaosmeta_jvm_exec.sh"
-	JVMPackage      = "chaosmeta-jvm-1.1.0"
+	JVMPackage      = "chaosmeta-jvm-1.1.1"
 	ContainerJVMDir = "/tmp"
 
 	FaultMethodException = "methodexception"
