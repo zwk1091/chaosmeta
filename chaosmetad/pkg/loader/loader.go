@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/traas-stack/chaosmeta/chaosmetad/pkg/injector/jvm"
+	"github.com/traas-stack/chaosmeta/chaosmetad/pkg/log"
 	"github.com/traas-stack/chaosmeta/chaosmetad/pkg/utils"
 	"github.com/traas-stack/chaosmeta/chaosmetad/pkg/utils/cmdexec"
 	"github.com/traas-stack/chaosmeta/chaosmetad/pkg/utils/errutil"
@@ -18,7 +19,7 @@ const (
 	LoadConfig     = "setConfig"
 	Load           = "Load"
 	Attach         = "Attach"
-	ProcessKey     = "java"
+	ProcessKey     = "javaagent"
 )
 
 type Loader struct {
@@ -70,12 +71,21 @@ func (i *Loader) SetOption(cmd *cobra.Command) {
 }
 
 func (i *Loader) Action(ctx context.Context, action string) error {
+	logger := log.GetLogger(ctx)
 	var (
 		pidList []int
 		err     error
 	)
 
-	pidList, _ = process.GetPidListByPidOrKeyInContainer(ctx, i.Args.Info.ContainerRuntime, i.Args.Info.ContainerId, i.Args.Pid, ProcessKey)
+	pidList, err = process.GetPidListByPidOrKeyInContainer(ctx, i.Args.Info.ContainerRuntime, i.Args.Info.ContainerId, i.Args.Pid, ProcessKey)
+
+	if err != nil {
+		return fmt.Errorf("get pid list error: %s", err.Error())
+	}
+
+	if len(pidList) == 0 {
+		return fmt.Errorf("pidList is null, containerId [%s], pid [%s], processKey[%s]", i.Args.Info.ContainerRuntime, i.Args.Pid, ProcessKey)
+	}
 
 	dstDir := i.getJVMPackagePath()
 	isExist, err := filesys.CheckDir(ctx, i.Args.Info.ContainerRuntime, i.Args.Info.ContainerId, dstDir)
@@ -92,8 +102,14 @@ func (i *Loader) Action(ctx context.Context, action string) error {
 			}
 		}
 
-		tarCmd := fmt.Sprintf("tar vzxf %s.tar.gz -C %s", dstDir, filesys.GetDirName(dstDir))
-		_, err := cmdexec.ExecCommonWithNS(ctx, i.Args.Info.ContainerRuntime, i.Args.Info.ContainerId, tarCmd, []string{namespace.MNT})
+		tarCheckCmd := fmt.Sprintf("export && which tar")
+		_, err := cmdexec.ExecCommonWithNS(ctx, i.Args.Info.ContainerRuntime, i.Args.Info.ContainerId, tarCheckCmd, []string{namespace.MNT})
+		if err != nil {
+			fmt.Println("check tar cmd error:", err.Error())
+		}
+
+		tarCmd := fmt.Sprintf("/bin/tar vzxf %s.tar.gz -C %s", dstDir, filesys.GetDirName(dstDir))
+		_, err = cmdexec.ExecCommonWithNS(ctx, i.Args.Info.ContainerRuntime, i.Args.Info.ContainerId, tarCmd, []string{namespace.MNT})
 		if err != nil {
 			return fmt.Errorf("tar JVM tool error: %s", err.Error())
 		}
@@ -103,13 +119,13 @@ func (i *Loader) Action(ctx context.Context, action string) error {
 			attachCmd := fmt.Sprintf("%s/%s attach %d", dstDir, RangerExecutor, unitPid)
 			_, err := cmdexec.ExecCommonWithNS(ctx, i.Args.Info.ContainerRuntime, i.Args.Info.ContainerId, attachCmd, []string{namespace.MNT, namespace.ENV, namespace.PID, namespace.IPC, namespace.UTS})
 			if err != nil {
-				return fmt.Errorf("load for %d error: %s", unitPid, err.Error())
+				logger.Error("load for %d error: %s", unitPid, err.Error())
 			}
 		} else if action == Load {
 			loadCmd := fmt.Sprintf("%s/%s load %d %s", dstDir, RangerExecutor, unitPid, i.Args.Load)
 			_, err := cmdexec.ExecCommonWithNS(ctx, i.Args.Info.ContainerRuntime, i.Args.Info.ContainerId, loadCmd, []string{namespace.MNT, namespace.ENV, namespace.PID, namespace.IPC, namespace.UTS})
 			if err != nil {
-				return fmt.Errorf("load for %d error: %s", unitPid, err.Error())
+				logger.Error("load for %d error: %s", unitPid, err.Error())
 			}
 		}
 	}

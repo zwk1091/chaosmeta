@@ -319,6 +319,9 @@ func ExecCommonWithNS(ctx context.Context, cr, cId, cmd string, ns []string) (st
 	if cr == "" {
 		return RunBashCmdWithOutput(ctx, cmd)
 	} else {
+		if cr == "pouch" {
+			cmd = "export PATH=/bin/:$PATH && " + cmd
+		}
 		return ExecContainer(ctx, cr, cId, ns, cmd, ExecRun)
 	}
 }
